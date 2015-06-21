@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+		<meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noindex,nofollow" />
+        <title>Zaphir web</title>
+        <!--<link rel="stylesheet" href="./css/uikit.min.css" />-->
+        <link rel="stylesheet" href="./css/uikit.almost-flat.min.css" />
+        <link rel="stylesheet" href="./css/components/sticky.almost-flat.min.css" />
+        <link rel="stylesheet" href="./css/components/form-advanced.almost-flat.min.css" />
+        <link rel="stylesheet" href="./css/components/form-file.almost-flat.min.css" />
+        <link rel="stylesheet" href="./css/components/placeholder.almost-flat.min.css" />
+        <link rel="stylesheet" href="./css/components/progress.almost-flat.min.css" />
+        <link rel="stylesheet" href="./css/components/upload.almost-flat.min.css" />
+        <link rel="stylesheet" href="./css/index.css" />
+        <script src="./js/lib/jquery-1.11.1.min.js"></script>
+        <script src="./js/lib/mustache.js"></script>
+        <script src="./js/lib/jquery.mustache.js"></script>
+        <script src="./js/lib/uikit.min.js"></script>
+        <script src="./js/lib/components/upload.min.js"></script>
+        <!--<script src="./js/lib/core/scrollspy.min.js"></script>-->
+        <script src="./js/lib/components/sticky.min.js"></script>
+        <!--<script src="./js/index.js"></script>-->
+        <!--<script src="./js/codelists.js"></script>
+        <script src="./js/xpaths.js"></script>
+        <script src="./js/config.js"></script>
+        <script src="./js/helpers.js"></script>-->
+        
+        <style type="text/css">
+            
+        </style>
+        <script language="javascript" type="text/javascript">
+            /*
+            function getUniqueID() { 
+                var uniqueID = new Date();
+                var myRandom=Math.floor(Math.random()*1000)
+                return uniqueID.getTime()+''+myRandom;
+            }
+            */
+            
+            $(document).ready(function() {
+                console.log( "ready!" );
+                
+                /*
+                $(document).on('change', '#select-file', function (event){
+                    var fileName = $('#select-file').val();
+                    $("#select-filename").html(fileName);
+                    $(".select-display").removeClass('uk-hidden');
+                });
+                */
+                
+                //$(function(){
+
+                var modal = $.UIkit.modal("#modal");
+                var progressbar = $("#progressbar");
+                var spinner = $(".spinner");
+                var bar         = progressbar.find('.uk-progress-bar');
+                var settings    = {
+
+                    action: '/convert', // upload url
+                    //action: '/test', // upload url
+
+                    allow : '*.(xml|xlsx|zip)', // allow only images
+
+                    param : 'file',
+                    type: 'json',
+                    single: true,
+                    
+                    beforeAll: function() {
+                        //$('#response').empty();
+                        //id = getUniqueID();
+                        //return false;
+                    },
+                    
+                    loadstart: function() {
+                        bar.css("width", "0%").text("0%");
+                        progressbar.removeClass("uk-hidden");
+                        spinner.removeClass("uk-hidden");
+                    },
+
+                    progress: function(percent) {
+                        percent = Math.ceil(percent);
+                        bar.css("width", percent+"%").text(percent+"%");
+                    },
+                    
+                    /*
+                    complete: function(response) {
+                        //$('#response').append(response.file.name[0]+'<br />');
+                        //console.log(response.file.name[0]);
+                        //console.log(response.id);
+                        console.log(response);
+                    },
+                    */
+                    allcomplete: function(response) {
+                        console.log(response);
+                        
+                        $('#modal').empty();
+
+                        bar.css("width", "100%").text("100%");
+
+                        setTimeout(function(){
+                            progressbar.addClass("uk-hidden");
+                            spinner.addClass("uk-hidden");
+                        }, 250);
+
+                        //alert("Upload Completed.\n"+response);
+                        if (response.success) {
+                            $.Mustache.load('./templates/modal.html')
+                                .done(function () {
+                                    $('#modal').mustache('tpl_modal', response);
+                                });
+                        }
+                        modal.show();
+                    }
+                };
+
+                var select = UIkit.uploadSelect($("#upload-select"), settings);
+                var drop   = UIkit.uploadDrop($("#upload-drop"), settings);
+                //});
+
+
+            });
+
+        </script>
+        
+    </head>
+    <body>
+        <div id="content" class="">
+            
+            <!--
+            <h1 class="uk-width-1-1">
+                <span class="uk-icon-globe"></span>
+                {{app.title}}
+                <span class="uk-h6 uk-hidden-small"><small><a href="{{csw_url_complete}}" target="_blank">[{{csw_url}}]</a></small></span>
+                <span class="uk-h6 uk-align-right uk-margin uk-hidden-small"><small>{{app.name}} {{app.version}} - (c) Guillaume Ryckelynck / CIGAL 2014 </small></span>
+            </h1>
+            -->
+            <div class="uk-grid uk-grid-small uk-margin-remove uk-position-top">
+                <div class="uk-width-1-1 uk-navbar uk-navbar-attached">
+                    <div class="uk-grid">
+                        <h1 class="uk-width-2-3"><span class="uk-icon-globe"></span> Zaphir web</h1>
+                        <!--<div class="uk-width-1-3 uk-h6 uk-text-right uk-margin uk-hidden-small"><small> mdConverter v.0.01 - (c) Guillaume Ryckelynck / CIGAL 2014 </small></span>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="uk-container uk-container-center uk-margin-top uk-margin-bottom">
+            <div class="uk-grid">
+                <div id="page" class="uk-width-medium-2-3">
+                    <div class="uk-panel" data-uk-sticky="{top:60}">
+                        <h2>Convertissez vos fiches de métadonnées!</h1>
+                        <p>Zaphir web est une application qui permet de générer simplement des fichiers conformes aux exigences de la directive européenne INSPIRE à partir de simples fichiers MS Excel (XLSX). </p>
+                        
+                        <form id="md-form" class="uk-form" data-uk-margin >
+                            <!--
+                            <fieldset class="">
+                                <legend>Type de conversion</legend>
+                                <div class="uk-form-row">
+                                    <div data-uk-button-checkbox>
+                                        <div class="uk-button uk-button-" data-uk-toggle="{target:'#tpl-fieldset'}">XML vers XLS(X)</div>
+                                        <div class="uk-button uk-button-">XLS(X) vers XML</div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset id="tpl-fieldset" class="uk-hidden uk-margin-large">
+                                <legend>Fichier de modèle (template XLSX)</legend>
+                                <div class="uk-form-row">
+                                    <div class="uk-form-file">
+                                        <div id="tpl-bt" class="uk-button uk-button-">Choisir un fichier XLSX</div>
+                                        <input id="tpl-file" name="tpl-file" type="file" />
+                                    </div>
+                                    <span class="tpl-display uk-hidden">Fichier choisi: <code id="tpl-filename"></code></span>
+                                </div>
+                            </fieldset>
+                            -->
+                            
+                            <fieldset>
+                                <legend><i class="uk-icon-spinner uk-icon-spin uk-hidden spinner"></i> Convertissez vos fichiers</legend>
+                                <div class="uk-form-row">
+                                    <div id="upload-drop" name="files_in" class="uk-placeholder uk-placeholder-large uk-text-center">
+                                        <i class="uk-icon-cloud-upload uk-icon-medium uk-text-muted uk-margin-small-right"></i> Ajouter des fichiers par glisser/déposer ou <a class="uk-form-file">selectionnez en un<input id="upload-select" type="file" name="files_in"></a>.
+                                    </div>
+                                    <div id="progressbar" class="uk-progress uk-hidden">
+                                        <div class="uk-progress-bar" style="width: 0%;">0%</div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <!--
+                            <button type="submit" id="submit-bt" class="uk-button uk-button-primary uk-align-right uk-hidden">Envoyer</button>-->
+                        </form>
+                        <!--
+                        <form action="/convert" method="post" enctype="multipart/form-data">
+                              Select a file: <input type="file" name="file" />
+                              <input type="submit" value="Start upload" />
+                        </form>
+                        -->
+                    </div>
+                </div>
+                <div id="help" class="uk-width-medium-1-3 uk-hidden-small">
+                    <div class="uk-panel uk-panel-box uk-panel-header" data-uk-sticky="{top:60}">
+                        <div class="uk-panel-badge uk-badge">A lire!</div>
+                        <h3 class="uk-panel-title"><i class="uk-icon-graduation-cap"></i> Aide </h3>
+                        
+                        <p>Zaphir web est une application qui permet:</p>
+                        <ul>
+                            <li>De convertir des fichiers MS Excel (XLSX) respectant la mise en forme établie dans le cadre du partenariat CIGAL (<a href="http://www.cigalsace.org">www.cigalsace.org</a>) en fichiers de métadonnées géographiques XML (norme 19139 / Inspire).</li>
+                            <li>De convertir des fichiers de métadonnées géographioques XML (norme 19139 / Inspire) en fichiers MS Excel XLSX selon une mise en forme établie dans le cadre du partenariat CIGAL (www.cigalsace.org). - <small><em>[En cours de développement]</em></small></li>
+                        </ul>
+                        <p>Pour ce faire, charger un fichier et laissez tourner... </p>
+                        <p><strong>Les formats supportés sont:</strong></p>
+                        <ul>
+                            <li>XML: fichier de métadonnées respectant la norme ISO 19139 / Inspire</li>
+                            <li>XLSX: fichier MS Excel mis en forme selon le profil CIGAL</li>
+                            <li>ZIP: ensemble de fichier XML et/ou XLSX</li>
+                        </ul>
+                        <p><strong>Lors de la conversion:</strong></p>
+                        <ul>
+                            <li>Les fichiers XML sont convertis en XLSX. - <small><em>[En cours de développement]</em></small></li>
+                            <li>Les fichiers XLSX sont convertis en XML.</li>
+                            <li>Les autres fichiers sont ignorés.</li>
+                        </ul>
+                        <p><em>NB: lors de la conversion d'un fichier XML en XLSX, les éléments relatifs aux spécifications INSPIRE sont ignorés.</em></p>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="uk-grid uk-grid-small uk-margin-remove uk-position-bottom">
+                <div id="footer" class="uk-width-1-1 uk-margin-remove uk-navbar uk-navbar-attached">
+                    <div class="uk-grid">
+                        <div class="uk-width-1-2 uk-margin-small"><span class="uk-icon-globe"></span> Zaphir web</div>
+                        <div class="uk-width-1-2 uk-text-right"><small> Zaphir web v.0.01 - (c) Guillaume Ryckelynck / CIGAL 2014 </small></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="modal" class="uk-modal">
+                <!-- templates/modal.html -->
+            </div>
+
+            <!--
+            <div class="uk-grid uk-grid-small uk-margin-remove uk-position-top">
+                <div class="uk-width-1-1 uk-navbar uk-navbar-attached">
+                    <div class="uk-grid">
+                        <h1 class="uk-width-2-3"><span class="uk-icon-globe"></span> Zaphir</h1>
+                        <!--<div class="uk-width-1-3 uk-h6 uk-text-right uk-margin uk-hidden-small"><small> Zaphir v.0.01 - (c) Guillaume Ryckelynck / CIGAL 2014 </small></span>--
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -->
+        
+            <!--
+            <div id="offcanvas" class="uk-offcanvas">
+                <div class="uk-offcanvas-bar">
+                    <ul class="uk-nav uk-nav-offcanvas" data-uk-scrollspy-nav="{closest:'li', smoothscroll:true}">
+                        <li class="uk-nav-header">For Beginners</li>
+                        <li class="uk-active"><a href="#getstarted">Get Started</a></li>
+                        <li class=""><a href="#templatesettings">Template Settings</a></li>
+                        <li class=""><a href="#customizer">Customizer</a></li>
+                        <li class="uk-nav-header">For Developers</li>
+                        <li class=""><a href="#customization">Customizaton</a></li>
+                        <li class=""><a href="#troubleshooting">Troubleshooting</a></li>
+                        <li class="uk-nav-divider"></li>
+                        <li class=""><a href="#faq"><i class="uk-icon-info-circle uk-margin-small-right"></i>FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            -->
+
+
+        </div>
+         
+    </body>
+</html>

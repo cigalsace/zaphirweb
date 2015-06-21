@@ -1,0 +1,82 @@
+<script id="tpl_modal" type="text/html">
+    <br />
+    <div class="uk-modal-dialog uk-modal-dialog-large">
+        <a class="uk-modal-close uk-close"></a>
+        <p>Lien de téléchargement des fichiers résultants: <strong><a id="download-link" href="/{{path_out}}/{{file_out}}">{{file_out}}</a></strong></p>
+        <hr />
+        <h3>Fichiers traités</h3>
+        <table class="uk-table">
+            <caption>Liste des fichiers convertis</caption>
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Destination</th>
+                </tr>
+            </thead>
+            <!--
+            <tfoot>
+                <tr>
+                    <td>Source</td>
+                    <td>Destination</td>
+                </tr>
+            </tfoot>
+            -->
+            <tbody>
+                {{#files_out}}
+                <tr>
+                    <td>
+                        {{src}}
+                        {{#src_view}}
+                            <a id="" target="_blank" class="uk-button uk-button-small uk-button-primary uk-align-right" href="../mdreader/index.html?url=../xml2csw?xml_dir={{path_in}}&id={{src}}"><i class="uk-icon-eye"></i></a>
+                            <!--<a id="" target="_blank" class="uk-button uk-button-small uk-button-primary uk-align-right" href="../{{path_in}}/{{src}}"><i class="uk-icon-download"></i></a>-->
+                        {{/src_view}}
+                    </td>
+                    <td>
+                        {{dst}}
+                        {{#dst_view}}
+                            <a id="" target="_blank" class="uk-button uk-button-small uk-button-primary uk-align-right" href="../mdreader/index.html?url=../xml2csw?xml_dir={{path_out}}&id={{dst}}"><i class="uk-icon-eye"></i></a>
+                            <a id="" target="_blank" class="uk-button uk-button-small uk-button-primary uk-align-right" href="../{{path_out}}/{{dst}}"><i class="uk-icon-download"></i></a>
+                        {{/dst_view}}
+                    </td>
+                </tr>
+                {{/files_out}}
+            </tbody>
+        </table>
+        {{#files_shp}}
+            <h3>Fichiers shapefile (*.shp):</h3>
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-grid">
+                    <div class="uk-width-1-1">
+                        <strong>{{base}}</strong>
+                    </div>
+                    <div class="uk-width-1-1 uk-margin">
+                        Taille: <code>{{size_human}}</code><br />
+                        Nombre d'objects: <code>{{nb_features}}</code><br />
+                        Système de projection: <code>EPSG:{{epsg}}</code>
+                    </div>
+                </div>
+                <hr />
+                <div class="uk-grid uk-grid-divider">
+                    <div class="uk-width-1-2">
+                        {{#extent}}
+                            <p>Emprise (<code>EPSG:{{epsg}}</code>):</p>
+                            <ul>
+                                <li>Ouest: <code>{{xmin}}</code> - Est: <code>{{xmax}}</code></li>
+                                <li>Sud: <code>{{ymin}}</code> - Nord: <code>{{ymax}}</code></li>
+                            </ul>
+                        {{/extent}}
+                    </div>
+                    <div class="uk-width-1-2">
+                        {{#extent_wgs84}}
+                            <p>Emprise WGS84 (<code>EPSG:4326</code>):</p>
+                            <ul>
+                                <li>Ouest: <code>{{xmin}}</code> - Est: <code>{{xmax}}</code></li>
+                                <li>Sud: <code>{{ymin}}</code> - Nord: <code>{{ymax}}</code></li>
+                            </ul>
+                        {{/extent_wgs84}}
+                    </div>
+                </div>
+            </div>
+        {{/files_shp}}
+    </div>
+</script>
